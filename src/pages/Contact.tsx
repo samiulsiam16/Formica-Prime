@@ -1,160 +1,119 @@
-import React, { useState } from 'react';
-import Chamber from '../components/Chamber';
-import Ant from '../components/Ant';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import MultiStepForm from '../components/MultiStepForm';
+import Ant from '../components/Ant';
 
 const Contact: React.FC = () => {
-  const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate submit sequence
-    setTimeout(() => {
-      setSubmitted(true);
-      setIsSubmitting(false);
-    }, 2000);
-  };
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
-    <div className="flex flex-col items-center gap-20">
-      <header className="text-center">
-        <h1 className="carved-text text-4xl mb-4">THE ROYAL MAILROOM</h1>
-        <p className="font-mono text-xs opacity-50 uppercase tracking-widest">SAY HELLO TO THE SURFACE WORLD</p>
-      </header>
+    <div className="min-h-screen bg-[#1A0F08] p-8 md:p-16 relative overflow-hidden">
+      {/* Background Texture */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
 
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Form Section */}
-        <div className="lg:col-span-2">
-          <AnimatePresence mode="wait">
-            {!submitted ? (
-              <motion.div
-                key="form"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5, y: -200 }}
-                className="relative"
+      <div className="max-w-6xl mx-auto relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-20"
+        >
+          <h1 className="text-6xl md:text-8xl font-bangers text-amber-500 mb-6 tracking-widest">THE DIG</h1>
+          <p className="text-xl font-mono text-amber-200/40 uppercase tracking-[0.5em]">READY TO START YOUR NEXT BIG PROJECT?</p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-8"
+          >
+            <div className="bg-[#2C1A0E] border-2 border-white/5 p-8 rounded-3xl shadow-xl">
+              <h3 className="text-2xl font-bangers text-white mb-4 tracking-widest">THE ROYAL APPLICATION</h3>
+              <p className="text-white/60 font-mono text-sm leading-relaxed mb-8">
+                EVERY PROJECT STARTS WITH A SINGLE DIG. OUR MULTI-STEP APPLICATION PROCESS ENSURES YOUR VISION IS HEARD BY THE QUEEN HERSELF.
+              </p>
+              <button 
+                onClick={() => setIsFormOpen(true)}
+                className="w-full bg-amber-500 text-black font-bangers py-4 rounded-2xl text-xl tracking-widest hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20"
               >
-                <div className="bg-[#F5E6C8] p-12 rounded-3xl text-[#2C1A0E] shadow-2xl relative overflow-hidden">
-                  {/* Parchment Texture */}
-                  <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
-                  
-                  <form onSubmit={handleSubmit} className="relative z-10 flex flex-col gap-8">
-                    <div className="flex flex-col gap-2">
-                      <label className="handwritten text-xl">Your Name (Surface World)</label>
-                      <input required type="text" className="bg-transparent border-b-2 border-[#6B4226] py-2 focus:outline-none focus:border-black transition-colors" />
-                    </div>
-                    
-                    <div className="flex flex-col gap-2">
-                      <label className="handwritten text-xl">Your Colony Email</label>
-                      <input required type="email" className="bg-transparent border-b-2 border-[#6B4226] py-2 focus:outline-none focus:border-black transition-colors" />
-                    </div>
+                BEGIN THE DIG
+              </button>
+            </div>
 
-                    <div className="flex flex-col gap-2">
-                      <label className="handwritten text-xl">Nature of Your Request</label>
-                      <select className="bg-transparent border-b-2 border-[#6B4226] py-2 focus:outline-none focus:border-black transition-colors appearance-none">
-                        <option>NEW TUNNEL BUILD (WEB)</option>
-                        <option>BRAND PHEROMONES (IDENTITY)</option>
-                        <option>COLONY BROADCAST (CAMPAIGN)</option>
-                        <option>WAR COUNCIL (STRATEGY)</option>
-                        <option>JUST SAYING HI</option>
-                      </select>
-                    </div>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-black/20 p-6 rounded-2xl border border-white/5">
+                <span className="text-3xl mb-2 block">📍</span>
+                <span className="text-amber-500 font-mono text-xs block mb-1">LOCATION</span>
+                <span className="text-white font-mono text-sm">DEEP UNDERGROUND, SECTOR 7</span>
+              </div>
+              <div className="bg-black/20 p-6 rounded-2xl border border-white/5">
+                <span className="text-3xl mb-2 block">📞</span>
+                <span className="text-amber-500 font-mono text-xs block mb-1">PHEROMONE</span>
+                <span className="text-white font-mono text-sm">+1 (800) ANT-DIGS</span>
+              </div>
+            </div>
+          </motion.div>
 
-                    <div className="flex flex-col gap-2">
-                      <label className="handwritten text-xl">Message to The Queen</label>
-                      <textarea required rows={4} className="bg-transparent border-b-2 border-[#6B4226] py-2 focus:outline-none focus:border-black transition-colors resize-none leading-8" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, #6B4226 31px, #6B4226 32px)' }}></textarea>
-                    </div>
-
-                    <div className="flex justify-center mt-8">
-                      <button 
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="group relative w-24 h-24 flex items-center justify-center"
-                      >
-                        <div className="absolute inset-0 bg-red-800 rounded-full shadow-xl group-hover:scale-110 transition-transform group-active:scale-95 animate-[waxStamp_2s_infinite_paused] group-hover:animate-none"></div>
-                        <div className="relative text-white font-display text-4xl font-bold">C</div>
-                        <div className="absolute -bottom-12 text-[10px] font-mono uppercase tracking-widest opacity-40 group-hover:opacity-100 transition-opacity">
-                          {isSubmitting ? 'STAMPING...' : 'STAMP & SEND'}
-                        </div>
-                      </button>
-                    </div>
-                  </form>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative"
+          >
+            <div className="absolute -inset-10 bg-amber-500/10 blur-3xl rounded-full animate-pulse" />
+            <div className="relative bg-[#2C1A0E] border-4 border-amber-900/50 p-12 rounded-[3rem] shadow-2xl overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-2 bg-amber-900/20" />
+              <div className="absolute bottom-0 left-0 w-full h-2 bg-amber-900/20" />
+              
+              <div className="flex flex-col items-center gap-8">
+                <div className="relative">
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute -inset-4 border-2 border-dashed border-amber-500/20 rounded-full"
+                  />
+                  <Ant type="worker" size="lg" mood="happy" />
                 </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-green-800/20 border-4 border-green-500/50 p-12 rounded-3xl text-center flex flex-col items-center gap-8"
-              >
-                <div className="flex gap-4">
-                  <Ant type="worker" className="animate-[celebrationDance_1s_infinite]" />
-                  <Ant type="creative" className="animate-[celebrationDance_1.2s_infinite_0.2s]" />
-                  <Ant type="tiny" className="animate-[celebrationDance_0.8s_infinite_0.4s]" />
+                <div className="text-center space-y-2">
+                  <h4 className="text-2xl font-bangers text-amber-500 tracking-widest">"CARRY" THE WORKER</h4>
+                  <p className="text-white/40 font-mono text-xs uppercase tracking-widest">CHIEF OF LOGISTICS & DIGGING</p>
                 </div>
-                <h2 className="carved-text text-3xl text-green-400">MESSAGE DELIVERED!</h2>
-                <p className="font-serif text-xl opacity-80">
-                  The Queen has been notified. ETA: 24-48 Ant Hours.
-                </p>
-                <button 
-                  onClick={() => setSubmitted(false)}
-                  className="px-8 py-3 rounded-full border-2 border-green-500/50 hover:bg-green-500/20 transition-colors uppercase font-mono text-xs tracking-widest"
-                >
-                  SEND ANOTHER LETTER
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Info Section */}
-        <div className="flex flex-col gap-8">
-          <ContactNote label="📍 COLONY COORDINATES" value="BENEATH THE PARK BENCH, SECTOR 7, BROOKLYN" rotation="-3deg" />
-          <ContactNote label="📧 QUEEN'S DIRECT LINE" value="QUEEN@COLONYCREATIVE.CO" rotation="2deg" />
-          <ContactNote label="📱 SURFACE COMM" value="+1 (555) ANT-WORK" rotation="-1deg" />
-          <ContactNote label="🕐 COLONY HOURS" value="24/7 (WE DO NOT SLEEP)" rotation="4deg" />
-          
-          <div className="mt-8 flex flex-col items-center gap-4">
-            <Ant type="queen" className="scale-75" />
-            <p className="text-[10px] font-mono opacity-40 uppercase tracking-widest text-center">
-              "THE QUEEN IS CURRENTLY READING MAIL.<br/>DO NOT INTERRUPT UNLESS IT IS A CRUMB."
-            </p>
-          </div>
+                <div className="bg-black/40 p-6 rounded-2xl border border-white/5 font-mono text-sm text-amber-200/60 italic text-center">
+                  "WE DON'T JUST BUILD WEBSITES. WE DIG DEEP INTO YOUR BRAND'S DNA TO FIND THE GOLD."
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Rain Effect (Contact Page Only) */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div 
-            key={i}
-            className="absolute bg-blue-400/30 w-[1px] h-[15px] animate-[rainFall_1s_linear_infinite]"
-            style={{ 
-              left: `${Math.random() * 100}%`,
-              top: `-${Math.random() * 20}%`,
-              animationDelay: `${Math.random() * 2}s`,
-              animationDuration: `${0.5 + Math.random() * 0.5}s`
-            }}
-          ></div>
-        ))}
-      </div>
+      {/* Form Modal */}
+      <AnimatePresence>
+        {isFormOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="w-full max-w-2xl relative"
+            >
+              <button 
+                onClick={() => setIsFormOpen(false)}
+                className="absolute -top-12 right-0 text-white/40 hover:text-white font-mono text-sm tracking-widest"
+              >
+                [ ABANDON DIG ]
+              </button>
+              <MultiStepForm onComplete={(data) => console.log('Form Data:', data)} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
-
-const ContactNote: React.FC<{ label: string, value: string, rotation: string }> = ({ label, value, rotation }) => (
-  <div 
-    className="bg-[#FAFAF5] p-6 rounded-lg shadow-xl text-[#2C1A0E] relative group hover:scale-105 transition-transform"
-    style={{ transform: `rotate(${rotation})` }}
-  >
-    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-red-600 rounded-full shadow-md z-10"></div>
-    <div className="text-[10px] font-mono opacity-40 uppercase tracking-widest mb-2">{label}</div>
-    <div className="handwritten text-lg font-bold">{value}</div>
-  </div>
-);
 
 export default Contact;

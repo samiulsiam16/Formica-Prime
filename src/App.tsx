@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Surface from './components/Surface';
 import TunnelNetwork from './components/TunnelNetwork';
@@ -7,6 +7,19 @@ import Ant from './components/Ant';
 import Chamber from './components/Chamber';
 import { PROJECTS, BLOG_POSTS } from './constants';
 import { Project, BlogPost, Mood } from './types';
+
+// New Components
+import VFXManager from './components/VFXManager';
+import DayNightCycle from './components/DayNightCycle';
+import AntClicker from './components/AntClicker';
+import OracleAnt from './components/OracleAnt';
+import TunnelRadio from './components/TunnelRadio';
+import AntCustomizer from './components/AntCustomizer';
+import CrumbRush from './components/CrumbRush';
+import TunnelEscape from './components/TunnelEscape';
+import LoadingScreen from './components/LoadingScreen';
+import KonamiCode, { ColonyTyping, IdleMode } from './components/EasterEggs';
+import MobileSwipeNavigation from './components/MobileSwipeNavigation';
 
 // Page Components
 import Home from './pages/Home';
@@ -17,14 +30,27 @@ import Services from './pages/Services';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import BlogPostDetail from './pages/BlogPostDetail';
+import ThroneRoom from './pages/ThroneRoom';
+import ArchiveVault from './pages/ArchiveVault';
+import TrainingGrounds from './pages/TrainingGrounds';
+import GraveyardOfConcepts from './pages/GraveyardOfConcepts';
+import ColonySimulationPage from './pages/ColonySimulation';
+
+import { AntSocialSystem } from './services/AntSocialSystem';
 
 const App: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<string>(window.location.hash || '#home');
   const [isDigging, setIsDigging] = useState(false);
-  const [foodItems, setFoodItems] = useState<{ id: number, x: number, y: number, type: string }[]>([]);
+  const [foodItems, setFoodItems] = useState<{ id: number, x: number, y: number, type: string, crumbs?: any[] }[]>([]);
   const [globalMood, setGlobalMood] = useState<Mood>('calm');
   const [population, setPopulation] = useState(1240);
   const [activeEvent, setActiveEvent] = useState<string | null>(null);
+  const [doodles, setDoodles] = useState<{ id: number, path: string, x: number, y: number }[]>([]);
+
+  useEffect(() => {
+    const socialSystem = new AntSocialSystem();
+    return () => {};
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,12 +103,24 @@ const App: React.FC = () => {
 
   const handleFoodDrop = (x: number, y: number) => {
     const types = ['crumb', 'apple', 'sugar', 'leaf'];
+    const type = types[Math.floor(Math.random() * types.length)];
+    
+    // Crumb Explosion Logic
+    const crumbs = Array.from({ length: 8 }).map((_, i) => ({
+      id: i,
+      vx: (Math.random() - 0.5) * 10,
+      vy: (Math.random() - 0.5) * 10,
+      rotate: Math.random() * 360
+    }));
+
     const newFood = {
       id: Date.now(),
       x,
       y,
-      type: types[Math.floor(Math.random() * types.length)]
+      type,
+      crumbs
     };
+
     setFoodItems(prev => [...prev, newFood]);
     setGlobalMood('panicked');
     
@@ -94,6 +132,26 @@ const App: React.FC = () => {
       setFoodItems(prev => prev.filter(f => f.id !== newFood.id));
     }, 5000);
   };
+
+  // ArtsY Ant Doodles
+  useEffect(() => {
+    const doodleInterval = setInterval(() => {
+      const paths = [
+        "M10 10 Q 50 50 90 10",
+        "M10 50 L 90 50",
+        "M50 10 L 50 90",
+        "M20 20 A 30 30 0 1 0 80 80"
+      ];
+      const newDoodle = {
+        id: Date.now(),
+        path: paths[Math.floor(Math.random() * paths.length)],
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight
+      };
+      setDoodles(prev => [...prev, newDoodle].slice(-20)); // Keep last 20
+    }, 15000);
+    return () => clearInterval(doodleInterval);
+  }, []);
 
   const renderPage = () => {
     const route = currentRoute.split('/')[0];
@@ -114,15 +172,74 @@ const App: React.FC = () => {
           return post ? <BlogPostDetail post={post} /> : <Blog />;
         }
         return <Blog />;
+      case '#throne-room': return <ThroneRoom />;
+      case '#archive': return <ArchiveVault />;
+      case '#training': return <TrainingGrounds />;
+      case '#graveyard': return <GraveyardOfConcepts />;
+      case '#colony': return <ColonySimulationPage />;
       default: return <Home />;
     }
   };
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth - 0.5) * 40,
+        y: (e.clientY / window.innerHeight - 0.5) * 40
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative overflow-hidden">
+      <LoadingScreen />
+      <KonamiCode />
+      <ColonyTyping />
+      <IdleMode />
+      <MobileSwipeNavigation />
+      
+      {/* Parallax Background Layers */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <motion.div animate={{ x: mousePos.x * 0.2, y: mousePos.y * 0.2 }} className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+        <motion.div animate={{ x: mousePos.x * 0.4, y: mousePos.y * 0.4 }} className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]" />
+        <motion.div animate={{ x: mousePos.x * 0.6, y: mousePos.y * 0.6 }} className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]" />
+        <motion.div animate={{ x: mousePos.x * 0.8, y: mousePos.y * 0.8 }} className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/black-linen.png')]" />
+        <motion.div animate={{ x: mousePos.x * 1.0, y: mousePos.y * 1.0 }} className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')]" />
+      </div>
+
+      {/* VFX Systems */}
+      <VFXManager />
+      <DayNightCycle />
+      <AntClicker />
+      <OracleAnt />
+      <TunnelRadio />
+      <AntCustomizer />
+      <CrumbRush />
+      <TunnelEscape />
+
       <Surface onFoodDrop={handleFoodDrop} />
       <TunnelNetwork />
       
+      {/* Wall Doodles */}
+      <div className="fixed inset-0 pointer-events-none z-[2]">
+        {doodles.map(d => (
+          <motion.svg
+            key={d.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.2 }}
+            className="absolute"
+            style={{ left: d.x, top: d.y, width: 100, height: 100 }}
+            viewBox="0 0 100 100"
+          >
+            <path d={d.path} stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" />
+          </motion.svg>
+        ))}
+      </div>
+
       <main className="relative z-10 pt-[150px] pb-20 px-4 max-w-6xl mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
@@ -219,7 +336,7 @@ const App: React.FC = () => {
             transition={{ duration: 1, times: [0, 0.7, 0.85, 1] }}
             className="absolute"
           >
-            <FoodGraphic type={food.type} />
+            <FoodGraphic type={food.type} crumbs={food.crumbs} />
           </motion.div>
         ))}
       </div>
@@ -261,7 +378,31 @@ const App: React.FC = () => {
   );
 };
 
-const FoodGraphic: React.FC<{ type: string }> = ({ type }) => {
+const FoodGraphic: React.FC<{ type: string, crumbs?: any[] }> = ({ type, crumbs }) => {
+  if (crumbs && type === 'crumb') {
+    return (
+      <div className="relative">
+        {crumbs.map(c => (
+          <motion.div
+            key={c.id}
+            animate={{ 
+              x: [0, c.vx * 20], 
+              y: [0, c.vy * 20],
+              rotate: [0, c.rotate],
+              opacity: [1, 0]
+            }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10">
+              <path d="M2 5 L5 2 L8 5 L5 8 Z" fill="#8B6914" />
+            </svg>
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+
   switch (type) {
     case 'crumb':
       return (

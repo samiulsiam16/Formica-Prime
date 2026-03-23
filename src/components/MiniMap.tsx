@@ -13,6 +13,11 @@ const MiniMap: React.FC<MiniMapProps> = ({ currentRoute, onNavigate }) => {
     { id: 'about', label: 'COUNCIL', x: 40, y: 40 },
     { id: 'contact', label: 'MAILROOM', x: 100, y: 220 },
     { id: 'blog', label: 'BULLETIN', x: 160, y: 40 },
+    { id: 'throne-room', label: 'THRONE', x: 40, y: 220 },
+    { id: 'archive', label: 'ARCHIVE', x: 160, y: 220 },
+    { id: 'training', label: 'GROUNDS', x: 40, y: 100 },
+    { id: 'graveyard', label: 'GRAVEYARD', x: 160, y: 100 },
+    { id: 'colony', label: 'CITY', x: 100, y: 10 },
   ];
 
   return (
@@ -26,6 +31,11 @@ const MiniMap: React.FC<MiniMapProps> = ({ currentRoute, onNavigate }) => {
         <path d="M 100 80 L 40 40" stroke="#3D200E" strokeWidth="8" fill="none" />
         <path d="M 100 80 L 160 40" stroke="#3D200E" strokeWidth="8" fill="none" />
         <path d="M 100 80 L 100 220" stroke="#3D200E" strokeWidth="8" fill="none" />
+        <path d="M 100 220 L 40 220" stroke="#3D200E" strokeWidth="8" fill="none" />
+        <path d="M 100 220 L 160 220" stroke="#3D200E" strokeWidth="8" fill="none" />
+        <path d="M 100 80 L 40 100" stroke="#3D200E" strokeWidth="8" fill="none" />
+        <path d="M 100 80 L 160 100" stroke="#3D200E" strokeWidth="8" fill="none" />
+        <path d="M 100 80 L 100 10" stroke="#3D200E" strokeWidth="8" fill="none" />
 
         {routes.map((route) => (
           <g 
